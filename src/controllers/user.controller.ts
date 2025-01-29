@@ -1,8 +1,10 @@
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { z } from "zod";
-import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
+
 import jwthelper from "../middleware/jwt.middleware";
+
 const prisma = new PrismaClient();
 
 const UserSchema = z.object({
@@ -35,12 +37,14 @@ export default class UserController {
           password: hashedPassword,
         },
       });
-      const token = jwthelper.generateToken({ email: user.email, id: user.id });
+      console.log(user);
+      const token = await jwthelper.generateToken({ email: user.email, id: user.id } );
+      console.log(token);
       // Respond with the created user (excluding sensitive data)
-      res.status(201).json({
+      res.status(200).json({
         id: user.id,
         email: user.email,
-        token
+        token: token
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -79,7 +83,7 @@ export default class UserController {
           message: "Invalid password",
         });
       }
-      const token = jwthelper.generateToken({ email: user.email, id: user.id });
+      const token = await jwthelper.generateToken({ email: user!.email, id: user!.id });
       // Respond with the user (excluding sensitive data)
       res.json({
         id: user.id,
@@ -107,9 +111,9 @@ export default class UserController {
 
       // Respond with the user (excluding sensitive data)
       res.json({
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
+        id: user!.id,
+        email: user!.email,
+        createdAt: user!.createdAt,
       });
     } catch (error) {
       res.status(500).json({

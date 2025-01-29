@@ -17,21 +17,23 @@ model User {
 
 model Plant {
     id          String   @id @default(cuid())
+    nickname    String?
     name        String
     origin      String?
     description String?
     userId      String
-    type        String
+    species     String
     user        User     @relation(fields: [userId], references: [id])
-    image      String?
+    image       String?
     requirements Requirement[]
 }
+
 
 model Requirement{
     id          String   @id @default(cuid())
     plantId     String
     plant       Plant    @relation(fields: [plantId], references: [id])
-    name        String
+     name       String
     description String?
     value       Int
     unit        String

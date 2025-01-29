@@ -1,6 +1,8 @@
 import { Router } from "express";
-import jwthelper from "../middleware/jwt.middleware";
+
 import RequirementsController from "../controllers/requirements.controller";
+import jwthelper from "../middleware/jwt.middleware";
+
 const requirementrouter = Router();
 
 requirementrouter.post("/requirements", jwthelper.verifyToken, RequirementsController.create);
