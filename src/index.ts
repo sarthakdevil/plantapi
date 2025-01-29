@@ -14,7 +14,9 @@ app.use(cors(
         allowedHeaders: ["Content-Type", "Authorization"]
     }
 ))
-app.use("/api", require("./routes"))
+app.use("/user", require("./router/user.routes"))
+app.use("/plant", require("./router/plant.routes"))
+app.use("/requirements", require("./router/requirements.routes"))
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server is running on port http://localhost:${PORT}`))

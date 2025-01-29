@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
-
+import jwthelper from "../middleware/jwt.middleware";
 const prisma = new PrismaClient();
 
 const UserSchema = z.object({
@@ -35,11 +35,12 @@ export default class UserController {
           password: hashedPassword,
         },
       });
-
+      const token = jwthelper.generateToken({ email: user.email, id: user.id });
       // Respond with the created user (excluding sensitive data)
       res.status(201).json({
         id: user.id,
-        email: user.email
+        email: user.email,
+        token
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -78,11 +79,12 @@ export default class UserController {
           message: "Invalid password",
         });
       }
-
+      const token = jwthelper.generateToken({ email: user.email, id: user.id });
       // Respond with the user (excluding sensitive data)
       res.json({
         id: user.id,
-        email: user.email
+        email: user.email,
+        token
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
